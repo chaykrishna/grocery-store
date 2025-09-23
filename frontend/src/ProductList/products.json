@@ -1,0 +1,82 @@
+[
+  {
+    "name": "",
+    "category": "Snack & Munchies",
+    "price": 18,
+    "originalPrice": 18,
+    "stock": 50,
+    "image": "product1"
+  },
+  {
+    "name": "",
+    "category": "Bakery & Biscuits",
+    "price": 24,
+    "originalPrice": 24,
+    "stock": 50,
+    "image": "product2"
+  },
+  {
+    "name": "",
+    "category": "Bakery & Biscuits",
+    "price": 32,
+    "originalPrice": 32,
+    "stock": 50,
+    "image": "product3"
+  },
+  {
+    "name": "",
+    "category": "Snack & Munchies",
+    "price": 3,
+    "originalPrice": 3,
+    "stock": 50,
+    "image": "product4"
+  },
+  {
+    "name": "",
+    "category": "Instant Food",
+    "price": 13,
+    "originalPrice": 13,
+    "stock": 50,
+    "image": "product5"
+  },
+  {
+    "name": "",
+    "category": "Dairy, Bread & Eggs",
+    "price": 18,
+    "originalPrice": 18,
+    "stock": 50,
+    "image": "product6"
+  },
+  {
+    "name": "",
+    "category": "Dairy, Bread & Eggs",
+    "price": 24,
+    "originalPrice": 24,
+    "stock": 50,
+    "image": "product7"
+  },
+  {
+    "name": "",
+    "category": "Instant Food",
+    "price": 32,
+    "originalPrice": 32,
+    "stock": 50,
+    "image": "product8"
+  },
+  {
+    "name": "",
+    "category": "Snack & Munchies",
+    "price": 3,
+    "originalPrice": 3,
+    "stock": 50,
+    "image": "product9"
+  },
+  {
+    "name": "",
+    "category": "Dairy, Bread & Eggs",
+    "price": 13,
+    "originalPrice": 13,
+    "stock": 50,
+    "image": "product10"
+  }
+]

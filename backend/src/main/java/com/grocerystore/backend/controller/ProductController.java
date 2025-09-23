@@ -1,14 +1,15 @@
 package com.grocerystore.backend.controller;
 
+import org.springframework.web.bind.annotation.*;
+
 import com.grocerystore.backend.model.Product;
 import com.grocerystore.backend.repository.ProductRepository;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:3000") // React dev server
 public class ProductController {
 
     private final ProductRepository repository;
