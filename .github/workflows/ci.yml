@@ -24,27 +24,22 @@ jobs:
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=3
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'temurin'
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-
-      - name: Install Docker Compose plugin
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose-plugin
 
       # ===== Backend Build =====
       - name: Build Backend with Maven
@@ -60,10 +55,8 @@ jobs:
         working-directory: ./frontend
         run: npm run build
 
-      # ===== Docker Build =====
-      - name: Build Docker images
-        run: docker compose -f infra/docker-compose.yml build
-
-      # ===== Optional: Bring up services =====
-      - name: Bring up services
-        run: docker compose -f infra/docker-compose.yml up -d
+      # ===== Docker Build & Up =====
+      - name: Build and start Docker services
+        run: |
+          docker compose -f infra/docker-compose.yml build
+          docker compose -f infra/docker-compose.yml up -d
