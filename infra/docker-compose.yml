@@ -1,0 +1,60 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: grocery-mysql
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: grocerydb
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: grocery-phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: grocery-mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ""
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  backend:
+    build: ../backend
+    container_name: grocery-backend
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://grocery-mysql:3306/grocerydb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ""
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  frontend:
+    build: ../frontend
+    container_name: grocery-frontend
+    restart: always
+    ports:
+      - "3000:80"  # local 3000 → container 80 (Nginx serves React build)
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:

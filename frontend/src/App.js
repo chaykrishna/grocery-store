@@ -2,6 +2,8 @@
 import React from "react";
 // css
 import "./App.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 // browserrouter 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // Components

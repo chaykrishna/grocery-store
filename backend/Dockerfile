@@ -1,20 +1,12 @@
-# Use Node.js LTS
-FROM node:20
+# Use OpenJDK
+FROM openjdk:21-jdk-slim
 
-# Set working directory
-WORKDIR /backend
+WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Copy Maven build files
+COPY target/demo-0.0.1-SNAPSHOT.jar app.jar
 
-# Install dependencies
-RUN npm install
+EXPOSE 8080
 
-# Copy all backend files
-COPY . .
-
-# Expose backend port
-EXPOSE 5000
-
-# Start the backend server
-CMD ["npm", "start"]
+# Run Spring Boot app
+ENTRYPOINT ["java", "-jar", "app.jar"]
