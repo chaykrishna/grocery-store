@@ -1,0 +1,91 @@
+name: Grocery Store CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: grocerydb
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      # Step 1 - Checkout Repo
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2 - Setup Java for backend
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Step 3 - Build Backend (Spring Boot)
+      - name: Build Backend
+        working-directory: backend
+        run: mvn clean package -DskipTests
+
+      # Step 4 - Setup Node for frontend
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Step 5 - Build Frontend
+      - name: Build Frontend
+        working-directory: frontend
+        run: |
+          npm install
+          npm run build
+
+      # Step 6 - Build Docker images
+      - name: Build Docker Images
+        run: |
+          docker build -t grocery-backend ./backend
+          docker build -t grocery-frontend ./frontend
+
+      # Step 7 - Run docker-compose for integration test
+      - name: Start Application Stack
+        working-directory: infra
+        run: |
+          docker-compose up -d
+          sleep 20
+
+      # Step 8 - Test API health
+      - name: Test Backend Health
+        run: |
+          curl --fail http://localhost:8080/api/products || exit 1
+
+      # Step 9 - Push images to DockerHub (Optional)
+      - name: Login to DockerHub
+        if: github.ref == 'refs/heads/main'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Images
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker tag grocery-backend ${{ secrets.DOCKER_USERNAME }}/grocery-backend:latest
+          docker tag grocery-frontend ${{ secrets.DOCKER_USERNAME }}/grocery-frontend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/grocery-backend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/grocery-frontend:latest
